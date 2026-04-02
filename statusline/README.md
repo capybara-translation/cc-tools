@@ -1,33 +1,33 @@
 # Claude Code Statusline Command
 
-Claude Code のステータスライン（画面下部）に、現在の作業ディレクトリ・プロジェクトディレクトリ・Git ブランチ名を表示するシェルスクリプトです。
+A shell script that displays the current working directory, project directory, and Git branch name in the Claude Code statusline.
 
-## 表示例
+## Example Output
 
 ```
 cwd: ~/repos/my-project  |  project: ~/repos/my-project  |  branch: main
 ```
 
-Git リポジトリ外では branch 部分が省略されます。
+The branch section is omitted outside of a Git repository.
 
-## 仕組み
+## How It Works
 
-Claude Code は標準入力に JSON（`workspace.current_dir`, `workspace.project_dir` など）を渡します。このスクリプトはそれを `jq` で解析し、整形した文字列を `stdout` に返します。
+Claude Code passes JSON (containing `workspace.current_dir`, `workspace.project_dir`, etc.) via stdin. This script parses it with `jq` and returns a formatted string to stdout.
 
-## 前提条件
+## Prerequisites
 
 - `jq`
 - `git`
 
-## インストール
+## Installation
 
-1. スクリプトに実行権限を付与します。
+1. Make the script executable.
 
 ```bash
 chmod +x statusline-command.sh
 ```
 
-2. Claude Code の設定ファイル（`~/.claude/settings.json` など）に以下を追加します。
+2. Add the following to your Claude Code settings file (e.g., `~/.claude/settings.json`).
 
 ```json
 {
@@ -37,7 +37,7 @@ chmod +x statusline-command.sh
 }
 ```
 
-`/path/to/` は実際のパスに置き換えてください。
+Replace `/path/to/` with the actual path.
 
 ## License
 
