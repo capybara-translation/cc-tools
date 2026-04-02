@@ -21,13 +21,7 @@ Claude Code passes JSON (containing `workspace.current_dir`, `workspace.project_
 
 ## Installation
 
-1. Make the script executable.
-
-```bash
-chmod +x statusline-command.sh
-```
-
-2. Add the following to your Claude Code settings file (e.g., `~/.claude/settings.json`).
+Add the following to your Claude Code settings file (e.g., `~/.claude/settings.json`).
 
 ```json
 {
