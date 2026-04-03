@@ -25,7 +25,8 @@ Add the following to your Claude Code settings file (e.g., `~/.claude/settings.j
 
 ```json
 {
-  "statusline": {
+  "statusLine": {
+    "type": "command",
     "command": "/path/to/statusline-command.sh"
   }
 }
