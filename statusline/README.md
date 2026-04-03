@@ -1,18 +1,22 @@
 # Claude Code Statusline Command
 
-A shell script that displays the current working directory, project directory, and Git branch name in the Claude Code statusline.
+A shell script that displays project info, session ID, Git branch, model name, and context usage in the Claude Code statusline.
 
 ## Example Output
 
 ```
-cwd: ~/repos/my-project  |  project: ~/repos/my-project  |  branch: main
+project: ~/repos/my-project  |  cwd: ~/repos/my-project  |  session: abc123...
+branch: main  |  Opus  |  ctx: 8%
 ```
 
-The branch section is omitted outside of a Git repository.
+- Line 1: project directory, current working directory, and session ID
+- Line 2: Git branch, model display name, and context window usage percentage
+
+Each field is omitted when its value is not available.
 
 ## How It Works
 
-Claude Code passes JSON (containing `workspace.current_dir`, `workspace.project_dir`, etc.) via stdin. This script parses it with `jq` and returns a formatted string to stdout.
+Claude Code passes JSON (containing `workspace.current_dir`, `workspace.project_dir`, `session_id`, `model.display_name`, `context_window.used_percentage`, etc.) via stdin. This script parses it with `jq` and returns a two-line formatted string to stdout.
 
 ## Prerequisites
 
