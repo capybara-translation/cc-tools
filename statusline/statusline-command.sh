@@ -14,11 +14,12 @@ project_display="${project_dir/#$home/~}"
 # Get git branch (skip optional locks to avoid contention)
 branch=$(git -C "$cwd" --no-optional-locks branch --show-current 2>/dev/null)
 
-# Line 1: project | cwd | session_id
-line1="project: ${project_display}  |  cwd: ${cwd_display}"
+# Line 1: project | session_id | cwd
+line1="project: ${project_display}"
 if [ -n "$session_id" ]; then
     line1="${line1}  |  session: ${session_id}"
 fi
+line1="${line1}  |  cwd: ${cwd_display}"
 
 # Line 2: branch | model | context_usage
 line2=""

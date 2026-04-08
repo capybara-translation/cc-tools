@@ -5,11 +5,11 @@ A shell script that displays project info, session ID, Git branch, model name, a
 ## Example Output
 
 ```
-project: ~/repos/my-project  |  cwd: ~/repos/my-project  |  session: abc123...
+project: ~/repos/my-project  |  session: abc123...  |  cwd: ~/repos/my-project
 branch: main  |  Opus  |  ctx: 8%
 ```
 
-- Line 1: project directory, current working directory, and session ID
+- Line 1: project directory, session ID, and current working directory
 - Line 2: Git branch, model display name, and context window usage percentage
 
 Each field is omitted when its value is not available.
