@@ -29,10 +29,11 @@ disable-model-invocation: true
    - Use imperative mood in the subject line (e.g., "add" not "added" or "adds")
    - Keep the subject line under 72 characters
    - Add a body with bullet points after a blank line if needed to explain "why"
+   - **The subject line and each bullet point MUST be written on a single line** (do not insert line breaks mid-sentence; line breaks are only allowed between the subject and body, and between bullet points)
    - Follow existing commit history style if present
    - **NEVER include a "Co-Authored-By" line**
 3. Present the commit message in a code block.
-4. **Immediately copy to clipboard**: run `printf '%s' "<message>" | pbcopy`.
+4. **Immediately copy to clipboard**: run `printf '%s' "<message>" | pbcopy`. Only use line breaks intentionally (between subject and body, and between bullet points); do not break sentences or bullets across multiple lines.
 5. Inform the user that the message has been copied to the clipboard.
 
 If no changes are detected, inform the user that there are no changes to commit.
