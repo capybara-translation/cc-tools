@@ -4,7 +4,12 @@ cwd=$(echo "$input" | jq -r '.workspace.current_dir')
 project_dir=$(echo "$input" | jq -r '.workspace.project_dir')
 session_id=$(echo "$input" | jq -r '.session_id // empty')
 model=$(echo "$input" | jq -r '.model.display_name // empty')
+effort=$(echo "$input" | jq -r '.effort.level // empty')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+rl_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+rl_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+pr_number=$(echo "$input" | jq -r '.pr.number // empty')
+pr_state=$(echo "$input" | jq -r '.pr.review_state // empty')
 
 # Shorten paths by replacing $HOME with ~
 home="$HOME"
@@ -14,35 +19,41 @@ project_display="${project_dir/#$home/~}"
 # Get git branch (skip optional locks to avoid contention)
 branch=$(git -C "$cwd" --no-optional-locks branch --show-current 2>/dev/null)
 
-# Line 1: project | session_id | cwd
-line1="project: ${project_display}"
-if [ -n "$session_id" ]; then
-    line1="${line1}  |  session: ${session_id}"
-fi
-line1="${line1}  |  cwd: ${cwd_display}"
+# One item per line: project, session, cwd, branch
+echo "project: ${project_display}"
+[ -n "$session_id" ] && echo "session: ${session_id}"
+echo "cwd: ${cwd_display}"
+[ -n "$branch" ] && echo "branch: ${branch}"
 
-# Line 2: branch | model | context_usage
-line2=""
-if [ -n "$branch" ]; then
-    line2="branch: ${branch}"
-fi
-if [ -n "$model" ]; then
-    if [ -n "$line2" ]; then
-        line2="${line2}  |  ${model}"
+# Append a field to the metrics line, separated by " | "
+append_metric() {
+    if [ -n "$metrics" ]; then
+        metrics="${metrics}  |  $1"
     else
-        line2="${model}"
+        metrics="$1"
     fi
-fi
+}
+
+# Metrics line: model | effort | ctx | 5h | 7d
+metrics=""
+[ -n "$model" ] && append_metric "model: ${model}"
+[ -n "$effort" ] && append_metric "effort: ${effort}"
 if [ -n "$used_pct" ]; then
-    used_int=$(printf '%.0f' "$used_pct")
-    if [ -n "$line2" ]; then
-        line2="${line2}  |  ctx: ${used_int}%"
-    else
-        line2="ctx: ${used_int}%"
-    fi
+    append_metric "ctx: $(printf '%.0f' "$used_pct")%"
 fi
+if [ -n "$rl_5h" ]; then
+    append_metric "5h: $(printf '%.0f' "$rl_5h")%"
+fi
+if [ -n "$rl_7d" ]; then
+    append_metric "7d: $(printf '%.0f' "$rl_7d")%"
+fi
+[ -n "$metrics" ] && echo "$metrics"
 
-echo "$line1"
-if [ -n "$line2" ]; then
-    echo "$line2"
+# Conditional PR line
+if [ -n "$pr_number" ]; then
+    if [ -n "$pr_state" ]; then
+        echo "PR #${pr_number} (${pr_state})"
+    else
+        echo "PR #${pr_number}"
+    fi
 fi
