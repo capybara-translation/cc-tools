@@ -12,6 +12,8 @@ A collection of custom skills for Claude Code.
 | [code-review-en](./code-review-en/SKILL.md) | `/code-review-en [branch]` | Review code changes in a separate context with structured feedback in English |
 | [code-review-debate](./code-review-debate/SKILL.md) | `/code-review-debate [branch]` | Iteratively review code via an adversarial discussion between independent reviewer and implementer subagents until a conclusion is reached (Japanese) |
 | [code-review-debate-en](./code-review-debate-en/SKILL.md) | `/code-review-debate-en [branch]` | Iteratively review code via an adversarial discussion between independent reviewer and implementer subagents until a conclusion is reached (English) |
+| [explain-changes](./explain-changes/SKILL.md) | `/explain-changes [scope]` | Explain applied code changes ordered by importance, with prose plus representative code snippets (Japanese). Scope = base branch, git range, or PR number |
+| [explain-changes-en](./explain-changes-en/SKILL.md) | `/explain-changes-en [scope]` | Explain applied code changes ordered by importance, with prose plus representative code snippets (English). Scope = base branch, git range, or PR number |
 
 ## Installation
 
@@ -24,6 +26,8 @@ cp -r code-review ~/.claude/skills/
 cp -r code-review-en ~/.claude/skills/
 cp -r code-review-debate ~/.claude/skills/
 cp -r code-review-debate-en ~/.claude/skills/
+cp -r explain-changes ~/.claude/skills/
+cp -r explain-changes-en ~/.claude/skills/
 ```
 
 ## License
