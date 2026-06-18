@@ -17,18 +17,20 @@ A collection of custom skills for Claude Code.
 
 ## Installation
 
-Copy skill directories to `~/.claude/skills/`:
+Symlink the skill directories into `~/.claude/skills/` so edits in this repo are
+picked up without re-copying. Run from this `skills/` directory:
 
 ```bash
-cp -r commit-msg ~/.claude/skills/
-cp -r commit-msg-en ~/.claude/skills/
-cp -r code-review ~/.claude/skills/
-cp -r code-review-en ~/.claude/skills/
-cp -r code-review-debate ~/.claude/skills/
-cp -r code-review-debate-en ~/.claude/skills/
-cp -r explain-changes ~/.claude/skills/
-cp -r explain-changes-en ~/.claude/skills/
+for s in commit-msg commit-msg-en \
+         code-review code-review-en \
+         code-review-debate code-review-debate-en \
+         explain-changes explain-changes-en; do
+  rm -rf ~/.claude/skills/"$s"
+  ln -s "$PWD/$s" ~/.claude/skills/"$s"
+done
 ```
+
+After (re)installing, run `/reload-skills` in Claude Code to refresh the list.
 
 ## License
 
