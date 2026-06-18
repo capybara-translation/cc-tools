@@ -67,4 +67,3 @@ The user wants to understand the changes you (or someone) applied. Organize the 
 - Do not assert from guesswork. Base claims on what the diff shows; flag anything uncertain as uncertain.
 - Output in English. Keep technical terms, code identifiers, and API names as-is.
 - Be concise. Keep prose tight and let the snippets carry the detail.
-</content>
