@@ -25,8 +25,7 @@ for s in commit-msg commit-msg-en \
          code-review code-review-en \
          code-review-debate code-review-debate-en \
          explain-changes explain-changes-en; do
-  rm -rf ~/.claude/skills/"$s"
-  ln -s "$PWD/$s" ~/.claude/skills/"$s"
+  ln -sfn "$PWD/$s" ~/.claude/skills/"$s"
 done
 ```
 
