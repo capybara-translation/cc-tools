@@ -33,7 +33,19 @@ disable-model-invocation: true
    - 既存のコミット履歴のスタイルがあればそれに合わせる
    - **「Co-Authored-By」行は絶対に含めないこと**
 3. コミットメッセージをコードブロックで提示する。
-4. **即座にクリップボードにコピーする**: `printf '%s' "<message>" | pbcopy` を実行する。改行は意図したもの（サブジェクトとbodyの区切り、各箇条書き項目の区切り）のみとし、センテンスや箇条書き項目の途中で改行しないこと。
+4. **クリップボードにコピーする**。UTF-8 + LF を保持したまま GUI クリップボードへ入れること。以下の 2 手順で行う:
+   1. メッセージを一時ファイルへ**そのままのバイト列 (LF 改行)** で書き出す。Write ツールが使えるならそれで書き出すのが最も確実。シェルのみで行う場合は変数展開・エスケープを避けるため quoted heredoc を使う (末尾に改行が 1 つ付くが git が除去するため無害):
+      ```sh
+      cat > "${TMPDIR:-/tmp}/claude-commit-msg.txt" <<'COMMIT_MSG_EOF'
+      <コミットメッセージ本文をそのまま>
+      COMMIT_MSG_EOF
+      ```
+   2. その一時ファイルを UTF-8 として読み、GUI クリップボードへセットする (CLI 版・デスクトップ版の両方で動作する):
+      ```sh
+      osascript -e 'set the clipboard to (read POSIX file "'"${TMPDIR:-/tmp}/claude-commit-msg.txt"'" as «class utf8»)'
+      ```
+   - **`pbcopy` と `do shell script "cat …"` は使わないこと**。デスクトップ版 Claude Code は Bash が GUI(Aqua) セッションから切り離されているため `pbcopy` は GUI クリップボードに届かず、`osascript` の `do shell script` は改行を LF→CR に変換してサブジェクト/body の `\n\n` 境界を壊す (GUI Git クライアントの Title/Description 自動分割が失敗する)。
+   - 改行はサブジェクトと body の区切り (空行) および各箇条書き項目の区切りのみとし、センテンスや箇条書き項目の途中では改行しないこと。
 5. クリップボードにコピー済みであることをユーザーに伝える。
 
 変更が検出されない場合は、コミットする変更がないことをユーザーに伝える。

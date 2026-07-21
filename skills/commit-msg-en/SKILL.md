@@ -33,7 +33,19 @@ disable-model-invocation: true
    - Follow existing commit history style if present
    - **NEVER include a "Co-Authored-By" line**
 3. Present the commit message in a code block.
-4. **Immediately copy to clipboard**: run `printf '%s' "<message>" | pbcopy`. Only use line breaks intentionally (between subject and body, and between bullet points); do not break sentences or bullets across multiple lines.
+4. **Copy to clipboard**, preserving UTF-8 + LF so it reaches the GUI clipboard intact. Do it in two steps:
+   1. Write the message to a temp file as **exact bytes (LF line endings)**. Using the Write tool is the most reliable. If doing it in the shell only, use a quoted heredoc to avoid variable expansion / escaping issues (it appends one trailing newline, which git strips — harmless):
+      ```sh
+      cat > "${TMPDIR:-/tmp}/claude-commit-msg.txt" <<'COMMIT_MSG_EOF'
+      <the commit message body, verbatim>
+      COMMIT_MSG_EOF
+      ```
+   2. Read that temp file as UTF-8 and set the GUI clipboard (works in both CLI and desktop Claude Code):
+      ```sh
+      osascript -e 'set the clipboard to (read POSIX file "'"${TMPDIR:-/tmp}/claude-commit-msg.txt"'" as «class utf8»)'
+      ```
+   - **Do NOT use `pbcopy` or `do shell script "cat …"`.** In desktop Claude Code, Bash is detached from the GUI (Aqua) session, so `pbcopy` writes to an isolated pasteboard that never reaches the GUI clipboard; and `osascript`'s `do shell script` converts LF→CR, destroying the subject/body `\n\n` boundary (breaking the GUI Git client's Title/Description auto-split).
+   - Only use line breaks intentionally (the blank line between subject and body, and between bullet points); do not break sentences or bullets across multiple lines.
 5. Inform the user that the message has been copied to the clipboard.
 
 If no changes are detected, inform the user that there are no changes to commit.
