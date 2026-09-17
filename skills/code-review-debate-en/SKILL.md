@@ -48,6 +48,7 @@ After each pass, update the ledger and check for convergence.
 ### Findings Ledger (state you maintain)
 
 Track each finding with: `ID` / `severity` (CRITICAL/WARNING/NIT) / `file:line` / `description` / `status` / each side's latest argument.
+Number `ID`s in order of being raised (`R1`, `R2`, ...) and never renumber across rounds (append new findings at the end). Use these IDs consistently in the ledger passed to subagents, in cross-round references, and in the conclusion output.
 Status transitions:
 - `OPEN`: raised by the reviewer, implementer has not responded
 - `DISPUTED`: the two sides' positions conflict
@@ -71,13 +72,13 @@ Status transitions:
 > - Areas: correctness & edge cases / security & privacy / performance / readability & maintainability / testing / error handling.
 > - Give each finding `severity`, `file:line`, `issue`, `impact`, and `fix`.
 > - **Do not fabricate issues to win. Base findings only on facts observable in the diff.**
-> - (On re-review) For each disputed ledger item, state `CONCEDE` or `HOLD`, attaching new evidence for `HOLD`. If the implementer's rebuttal is sound, `CONCEDE` gracefully.
+> - (On re-review) For each disputed ledger item, lead with its ledger ID (e.g. R1) and then state `CONCEDE` or `HOLD`, attaching new evidence for `HOLD`. If the implementer's rebuttal is sound, `CONCEDE` gracefully. Mark new findings as `NEW` without an ID (the moderator assigns IDs).
 
 ### Implementer Instructions (skeleton of the subagent prompt)
 
 > You are the implementer of the change, verifying the validity of the review findings. But **do not defend reflexively — accept valid findings.**
 > - First run `<diff command>` to fetch the diff, and read related files as needed.
-> - For each finding, state `ACCEPT` (valid, must fix) / `REJECT` (false positive) / `PARTIAL` (partly valid).
+> - For each finding, lead with its ledger ID (e.g. R1) and then state `ACCEPT` (valid, must fix) / `REJECT` (false positive) / `PARTIAL` (partly valid). Never omit or reassign IDs.
 > - For `REJECT` / `PARTIAL`, always attach concrete `file:line` evidence ("it's fine" alone is forbidden).
 > - Point out any assumptions, context, or existing safeguards the finding overlooks.
 > - If the reviewer is right, simply `ACCEPT`. Do not argue to save face.
@@ -95,7 +96,7 @@ After convergence (or hitting the cap), always output in the following structure
 
 ## Accepted Findings (mutually agreed, must fix)
 
-### [CRITICAL] Title
+### [R1][CRITICAL] Title
 - **File**: `path/to/file.ext:line`
 - **Issue**: Description of the agreed problem
 - **Fix**: Concrete fix suggestion
@@ -104,17 +105,17 @@ After convergence (or hitting the cap), always output in the following structure
 (Ordered by severity: CRITICAL > WARNING > NIT)
 
 ## Dismissed Findings (false positives / out of scope)
-- **[original severity] Title** (`file:line`): Reason for dismissal (implementer's rebuttal and the evidence on which the reviewer conceded)
+- **[R7][original severity] Title** (`file:line`): Reason for dismissal (implementer's rebuttal and the evidence on which the reviewer conceded)
 
 ## Unresolved Points (no agreement)
-- **[severity] Title** (`file:line`):
+- **[R3][severity] Title** (`file:line`):
   - Reviewer's position: ...
   - Implementer's position: ...
   - Moderator's note: which argument is stronger, and what extra information would settle it
 
 ## Discussion Log (summary)
-- Round 1: reviewer raised N findings → implementer ACCEPT x / REJECT y / PARTIAL z
-- Round 2: ...
+- Round 1: reviewer raised N findings (R1–RN) → implementer ACCEPT x / REJECT y / PARTIAL z (disputed: R3, R7)
+- Round 2: reviewer CONCEDE R7, HOLD R3 → ...
 
 ## Suggested Tests
 - List test cases that should be added for these changes
@@ -126,4 +127,5 @@ After convergence (or hitting the cap), always output in the following structure
 - Always output the "Suggested Tests" section, even if there are zero findings.
 - No empty praise. Every judgment must be backed by file:line evidence.
 - Do not paste subagents' raw output; aggregate based on the ledger.
+- Whenever you refer to a finding in the conclusion, the log, or later conversation, use its ledger ID (e.g. R1), and always map each ID to its title in the headings above. Never reference an ID alone without that mapping.
 - Cap rounds at 3. To avoid excess cost, stop immediately once converged.
