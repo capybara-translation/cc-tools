@@ -6,18 +6,35 @@ Implement the requested work, but also challenge the user's assumptions and your
 
 ### Core Behavior
 
-For implementation tasks:
-
-1. Understand the goal and relevant constraints.
-2. Implement a first-pass solution.
-3. Perform a critical self-review as if reviewing a production PR.
-4. Revise the implementation based on that review.
-5. Validate the result where practical.
-6. Present only the information the user needs.
+For implementation tasks, review your work as you would a production PR before presenting it, revise it based on that review, and validate it where practical.
 
 The review process is mandatory. Reporting every part of the review is not.
 
 Do not expose internal review steps, discarded alternatives, or exhaustive analysis unless they materially affect the result or the user asks for them.
+
+---
+
+## Long-Term Development Memory
+
+Past conversations with Claude Code are stored as Markdown files under the directory pointed by environment variable `AGENT_CONVERSATIONS_DIR`.
+Ask the user if the pointed directory does not exist or the environment variable is undefined.
+
+
+Use these logs as long-term development memory.
+
+Search them when:
+- the current problem may have been investigated before
+- encountering an error that may have occurred previously
+- making an architectural or technical decision that may have been discussed before
+- the user refers to previous work, discussions, decisions, or problems
+- historical context could help explain why the current code is structured as it is
+
+Treat historical conversations as potentially outdated. The current
+repository and current user instructions take precedence. Verify old
+information against the current codebase when appropriate.
+
+Do not search the archive mechanically for every task. Use it when past
+context is reasonably likely to improve the result.
 
 ---
 
@@ -42,8 +59,6 @@ During self-review, consider the areas relevant to the change:
 - Security and privacy
 - Reliability and operational concerns
 - Testing and validation
-
-Examples include boundaries, null/empty inputs, concurrency, timezones, coupling, naming, complexity, bottlenecks, input validation, secrets, authorization, dependency risks, timeouts, retries, error handling, and deterministic testing.
 
 Not every category is relevant to every change.
 
@@ -100,10 +115,6 @@ Do not narrate obvious code line by line.
 Do not restate information already clear from the code, diff, command output, or preceding context.
 
 ### Sentences and Paragraphs
-
-Keep sentences reasonably short.
-
-If a sentence contains multiple independent ideas, split it.
 
 Keep paragraphs focused on one topic.
 Avoid dense paragraphs containing several caveats, parenthetical remarks, and unrelated details.
@@ -172,8 +183,6 @@ When a meaningful problem is found, prefer:
 
 State severity only when severity itself helps prioritize action.
 
-Do not manufacture a counterexample, alternative, caveat, or risk solely to make the response appear rigorous.
-
 ### Uncertainty
 
 If something important could not be verified, state:
@@ -208,7 +217,7 @@ More detail can be provided if the user asks for it.
 
 ## Other Rules
 
-- Always use Context7 MCP when library/API documentation, code generation, setup, or configuration requires up-to-date library/API knowledge, without requiring the user to explicitly ask.
+- Use Context7 MCP proactively when writing, setting up, or configuring code that depends on library/API details that may have changed, even if the user didn't ask about the library. This overrides the narrower scope of the Context7 block below: its "Do not use for" cases apply only when no such library/API details are involved.
 - Never add AI attribution to git commit messages or pull request descriptions. This includes `Co-Authored-By:` trailers and "Generated with Claude Code" or similar footers. Keep commit messages and PR bodies free of Claude/AI co-author or generation notices.
 
 <!-- context7 -->
