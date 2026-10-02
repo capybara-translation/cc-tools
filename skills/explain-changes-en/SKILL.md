@@ -1,6 +1,6 @@
 ---
 name: explain-changes-en
-description: Explain the code changes you applied, ordered by importance, with prose plus representative code snippets, in English. Accepts an optional scope argument (base branch, git range, or PR number).
+description: Explain the code changes you applied, ordered by importance, with prose plus representative code snippets and Mermaid diagrams where they help, in English. Accepts an optional scope argument (base branch, git range, or PR number).
 disable-model-invocation: true
 ---
 
@@ -29,7 +29,7 @@ Argument value: $ARGUMENTS
 
 ## Your Task
 
-The user wants to understand the changes you (or someone) applied. Organize the diff **by importance** and explain it with **prose plus representative code snippets**. Do not paste the raw diff verbatim — synthesize it so the reader grasps the design decisions.
+The user wants to understand the changes you (or someone) applied. Organize the diff **by importance** and explain it with **prose plus representative code snippets**, adding **Mermaid diagrams** where relationships or flow are hard to grasp from prose alone. Do not paste the raw diff verbatim — synthesize it so the reader grasps the design decisions.
 
 ### Steps
 
@@ -57,12 +57,26 @@ The user wants to understand the changes you (or someone) applied. Organize the 
    - You may trim comments as long as the original intent stays clear.
    - For mechanical churn (signature-follow test edits, gofmt formatting, etc.), do not add snippets — cover it in one or two sentences at the end.
 
-5. **Design takeaways**: end with 2–4 bullets capturing the **through-line** of the change (the overall spine, not individual files).
+5. **Add diagrams where they help**: when prose and snippets alone make a relationship hard to grasp, add a Mermaid diagram inside that file's explanation.
+   - When to use which:
+     - Branching logic / data flow → `flowchart`
+     - Call order across modules or processes → `sequenceDiagram`
+     - State transitions / lifecycles → `stateDiagram-v2`
+     - Before/after comparisons or mappings → a Markdown table, not a diagram
+   - Skip diagrams for simple changes contained in one file and for mechanical follow-up edits.
+   - Precede each diagram with a one-line "what this shows". Keep diagrams focused (roughly 1–3 per explanation, about 10 nodes per diagram at most).
+   - Syntax pitfalls (a broken diagram does not render):
+     - Write the ` ```mermaid ` block directly. Do not wrap it in another code block.
+     - Quote labels containing spaces or symbols (`A["check cache"]`; in `stateDiagram-v2`, `state "In review" as Review`).
+     - Use alphanumeric node IDs. Do not use lowercase `end` as an ID.
+
+6. **Design takeaways**: end with 2–4 bullets capturing the **through-line** of the change (the overall spine, not individual files).
 
 ### Rules
 - Order **by importance**, not by path, alphabetically, or diff order.
 - Snippets are **key lines only**. No verbose quoting or whole-file dumps.
-- **Every code block gets a one-line "what this shows".**
+- **Every code block and diagram gets a one-line "what this shows".**
+- Diagrams depict only what the diff shows. Do not draw inferred relationships.
 - Do not paste the raw diff verbatim — synthesize it.
 - Do not assert from guesswork. Base claims on what the diff shows; flag anything uncertain as uncertain.
 - Output in English. Keep technical terms, code identifiers, and API names as-is.

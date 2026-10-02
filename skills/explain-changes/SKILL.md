@@ -1,6 +1,6 @@
 ---
 name: explain-changes
-description: Explain the code changes you applied, ordered by importance, with prose plus representative code snippets, in Japanese. Accepts an optional scope argument (base branch, git range, or PR number).
+description: Explain the code changes you applied, ordered by importance, with prose plus representative code snippets and Mermaid diagrams where they help, in Japanese. Accepts an optional scope argument (base branch, git range, or PR number).
 disable-model-invocation: true
 ---
 
@@ -29,7 +29,7 @@ Argument value: $ARGUMENTS
 
 ## Your Task
 
-ユーザーがあなた（または誰か）が適用した変更の要点を理解したい。差分を**重要度順**に整理し、**散文＋代表的なコード片**で解説せよ。raw diff をそのまま貼るのではなく、読み手が設計判断を掴めるように合成して説明する。
+ユーザーがあなた（または誰か）が適用した変更の要点を理解したい。差分を**重要度順**に整理し、**散文＋代表的なコード片**で解説し、関係や流れが文章だけでは掴みにくい箇所は **Mermaid 図**で補え。raw diff をそのまま貼るのではなく、読み手が設計判断を掴めるように合成して説明する。
 
 ### 手順
 
@@ -57,12 +57,26 @@ Argument value: $ARGUMENTS
    - コメントは原文の意図が伝わる範囲で簡約してよい。
    - 機械的な churn（シグネチャ追従のテスト修正、gofmt 整形など）にはコード片を付けず、最後にまとめて1〜2文で触れる。
 
-5. **設計の要点**: 末尾に2〜4個の箇条書きで「この変更を貫く設計の背骨」を述べる（個々のファイルではなく全体の筋）。
+5. **図で補う**: 文章とコード片だけでは関係を掴みにくい箇所には、該当ファイルの解説の中に Mermaid 図を添える。
+   - 付ける場面と図の種類:
+     - 処理の分岐・データの流れ → `flowchart`
+     - 複数モジュール・プロセス間の呼び出し順 → `sequenceDiagram`
+     - 状態遷移・ライフサイクル → `stateDiagram-v2`
+     - 変更前後の比較・対応関係 → 図ではなく Markdown 表
+   - 付けない場面: 1ファイル内で閉じた単純な変更、機械的な追従修正。
+   - 各図の直前に「この図が示すこと」を1行で書く。図は要点に絞る（目安: 解説全体で1〜3個、1図あたりノード10個前後まで）。
+   - 記法の注意（崩れると図が表示されない）:
+     - ` ```mermaid ` ブロックを直接書く。別のコードブロックで囲まない。
+     - 日本語や記号を含むラベルは二重引用符で囲む（`A["キャッシュを確認"]`、`stateDiagram-v2` では `state "下書き" as Draft`）。
+     - ノード ID は英数字にする。小文字の `end` は ID に使わない。
+
+6. **設計の要点**: 末尾に2〜4個の箇条書きで「この変更を貫く設計の背骨」を述べる（個々のファイルではなく全体の筋）。
 
 ### ルール
 - **重要度順**に並べる。パス順・アルファベット順・diff 出現順では並べない。
 - コード片は**要点の行のみ**。冗長な引用や全文貼り付けは禁止。
-- **すべてのコードブロックに「何を示すか」の1行**を添える。
+- **すべてのコードブロックと図に「何を示すか」の1行**を添える。
+- 図は差分から読み取れる事実だけを描く。推測した関係を描かない。
 - raw diff をそのまま貼らない。合成して説明する。
 - 推測で断定しない。差分から読み取れる事実に基づき、不明な点は不明と明示する。
 - 日本語で出力する。技術用語・コード識別子・API 名は原語のまま使う。
