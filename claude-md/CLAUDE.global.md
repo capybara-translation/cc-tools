@@ -219,6 +219,7 @@ More detail can be provided if the user asks for it.
 
 - Use Context7 MCP proactively when writing, setting up, or configuring code that depends on library/API details that may have changed, even if the user didn't ask about the library. This overrides the narrower scope of the Context7 block below: its "Do not use for" cases apply only when no such library/API details are involved.
 - Never add AI attribution to git commit messages or pull request descriptions. This includes `Co-Authored-By:` trailers and "Generated with Claude Code" or similar footers. Keep commit messages and PR bodies free of Claude/AI co-author or generation notices.
+- When mentioning a GitHub issue or pull request to the user, always give it as a Markdown link to its full URL (e.g. `[owner/repo#123](https://github.com/owner/repo/pull/123)`). Never give a bare number such as `#123` or `PR 123`.
 
 <!-- context7 -->
 Use Context7 MCP to fetch current documentation whenever the user asks about a library, framework, SDK, API, CLI tool, or cloud service — even well-known ones like React, Next.js, Prisma, Express, Tailwind, Django, or Spring Boot. This includes API syntax, configuration, version migration, library-specific debugging, setup instructions, and CLI tool usage. Use even when you think you know the answer — your training data may not reflect recent changes. Prefer this over web search for library docs.
