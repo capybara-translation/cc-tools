@@ -17,10 +17,11 @@ Do not expose internal review steps, discarded alternatives, or exhaustive analy
 ## Long-Term Development Memory
 
 Past conversations with Claude Code are stored as Markdown files under the directory pointed by environment variable `AGENT_CONVERSATIONS_DIR`.
-Ask the user if the pointed directory does not exist or the environment variable is undefined.
-
-
 Use these logs as long-term development memory.
+
+If a tool or skill for searching these conversations is available, use it first.
+Otherwise, or when it finds nothing relevant, grep the Markdown files directly.
+Ask the user if the pointed directory does not exist or the environment variable is undefined.
 
 Search them when:
 - the current problem may have been investigated before
